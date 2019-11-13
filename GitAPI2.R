@@ -10,8 +10,8 @@ oauth_endpoints("github")
 
 # Change based on what you 
 myapp <- oauth_app(appname = "Access_Github",
-                   key = "8d5f8e3baf1d5224e3e2",
-                   secret = "43116acd50511ba7c882f14f7e1249bbefef0b01")
+                    key = "236c6ad548a533ff2918",
+                   secret = "ecbd6554e2cd33c910a6c5cd911841f48a8df2e7")
 
 # Get OAuth credentials
 github_token <- oauth2.0_token(oauth_endpoints("github"), myapp)
