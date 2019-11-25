@@ -31,3 +31,32 @@ gitDF = jsonlite::fromJSON(jsonlite::toJSON(json1))
 
 # Subset data.frame
 gitDF[gitDF$full_name == "jtleek/datasharing", "created_at"] 
+
+#Connecting to my Plotly account 
+Sys.setenv("plotly_username"="ElizabethBolger")
+Sys.setenv("plotly_api_key"="Lg3FKICVHpfQVL6JoOm8")
+
+#Function that returns a list of the provided user's followers. 
+getFollowers <- function(username)
+{
+  URL <- paste("https://api.github.com/users/", username , "/followers", sep="")
+  followers = fromJSON(URL)
+  return (followers$login)
+}
+
+#Function that returns a list of the people the provided user is following. 
+getFollowing <- function(username)
+{
+  URL <- paste("https://api.github.com/users/", username , "/following", sep="")
+  followers = fromJSON(URL)
+  return (followers$login)
+}
+
+#Function that returns a list of the provided user's repositories
+getRepositories <- function(username)
+{
+  URL <- paste("https://api.github.com/users/", username , "/repos", sep="")
+  repos = fromJSON(URL) 
+  repos$committs
+  return (repos$name)
+}
