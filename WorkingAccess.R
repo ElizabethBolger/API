@@ -66,3 +66,78 @@ githubDB = jsonlite::fromJSON(jsonlite::toJSON(extract))
 githubDB$login
 
 
+#List of user IDs
+IDs = githubDB$login
+userNames = c(IDs)
+
+#Create an empty vector and data frame
+users = c()
+usersDB = data.frame(
+  username = integer(),
+  following = integer(),
+  followers = integer(),
+  repos = integer(),
+  dateCreated = integer()
+)
+
+#Loops through users and adds to list
+for(i in 1:length(userNames))
+{
+  
+  followingURL = paste("https://api.github.com/users/", userNames[i], "/following", sep = "")
+  followingRequest = GET(followingURL, gtoken)
+  followingContent = content(followingRequest)
+  
+  #Does not add users if they have no followers
+  if(length(followingContent) == 0)
+  {
+    next
+  }
+  
+  
+  
+  followingDF = jsonlite::fromJSON(jsonlite::toJSON(followingContent))
+  followingLogin = followingDF$login
+  
+  #Loop through 'following' users
+  for (j in 1:length(followingLogin))
+  {
+    #Check no two users are the same
+    if (is.element(followingLogin[j], users) == FALSE)
+    {
+      #Adds each user list
+      users[length(users) + 1] = followingLogin[j]
+      
+      #Collect each followers information
+      followingUrl2 = paste("https://api.github.com/users/", followingLogin[j], sep = "")
+      following2 = GET(followingUrl2, gtoken)
+      followingContent2 = content(following2)
+      followingDF2 = jsonlite::fromJSON(jsonlite::toJSON(followingContent2))
+      
+      #The people user following
+      followingNumber = followingDF2$following
+      
+      #The people following user
+      followersNumber = followingDF2$followers
+      
+      #Repository count
+      reposNumber = followingDF2$public_repos
+      
+      #What year the account was created 
+      yearCreated = substr(followingDF2$created_at, start = 1, stop = 4)
+      
+      #Add users data to a new row in dataframe
+      usersDB[nrow(usersDB) + 1, ] = c(followingLogin[j], followingNumber, followersNumber, reposNumber, yearCreated)
+      
+    }
+    next
+  }
+  #Stop when there are more than 150 users
+  if(length(users) > 150)
+  {
+    break
+  }
+  next
+  }
+
+
