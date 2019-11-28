@@ -4,6 +4,10 @@ library(jsonlite)
 library(httpuv)
 #install.packages("httr")
 library(httr)
+#install.packages("plotly")
+library(plotly)
+#install.packages("devtools")
+require(devtools)
 
 # Can be github, linkedin etc depending on application
 oauth_endpoints("github")
@@ -139,5 +143,36 @@ for(i in 1:length(userNames))
   }
   next
   }
+
+#Link to plotly
+Sys.setenv("plotly_username"="ElizabethBolger")
+Sys.setenv("plotly_api_key"="VSRPqdR4bGZVYATNRsnw")
+
+#Plot one graphs repositories vs followers by year.
+#Takes into account 150 of Jason's follower
+
+
+#X-axis displays shows the no. of repositories per user.
+#Y-axis displays  the no. of followers of each each of Jason's followers.
+plotRF = plot_ly(data = usersDB, x = ~repos, y = ~followers, text = ~paste("Followers: ", followers, "<br>Repositories: ", repos, "<br>Date Created:", dateCreated), color = ~dateCreated)
+plotRF
+#Sends graph to plotly
+api_create(plotRF, filename = "Repositories vs Followers")
+#Plot can be viewed : https://plot.ly/~ElizabethBolger/1/#/
+
+#Plot two graphs following vs followers by year.
+
+#X-axis displays the no. of users followed by each of Jason's followers.
+#Y-axis shows the no. of followers of each of Jason's followers.
+plotFF = plot_ly(data = usersDB, x = ~following, y = ~followers, text = ~paste("Followers: ", followers, "<br>Following: ", following), color = ~dateCreated)
+plotFF
+#Sends graph to plotly
+api_create(plotFF, filename = "Following vs Followers")
+#Plot can be viewed: https://plot.ly/~ElizabethBolger/3/
+
+#Below code is to produce plot 3.
+#Graph the 10 most popular languages used by Jason's followers
+#Same 150 users from two previous plots are used.
+languages = c()
 
 
